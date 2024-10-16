@@ -21,11 +21,13 @@ action = st.selectbox('Azioni', ['Seleziona...', 'Chiudi l\'app Firebase'])
 
 # Inizializza l'app Firebase
 cred = credentials.Certificate(r"C:\Users\User\Downloads\jaidphysdemo-firebase-adminsdk-pxz38-e46d20f07e.json")
-user_app = firebase_admin.initialize_app(cred)
+try:
+    user_app = firebase_admin.initialize_app(cred)
+except Exception as e:
+    st.error(f'{e}')
 
 # Ottieni una istanza di Firestore
 db = firestore.client()
-
 
 
 # Pulsante per inviare il feedback
@@ -50,7 +52,7 @@ if st.checkbox("Mostra Feedback"):
         feedback_ref = db.collection('feedback').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1)
         feedbacks = feedback_ref.stream()
         for fb in feedbacks:
-            print(fb.to_dict()['content'])        
+            st.text_area("Feedback:", value=fb.to_dict()['content'], height=200, disabled=True)      
     except Exception as e:
         st.error(f"Errore nella lettura dei feedback: {e}")
 
