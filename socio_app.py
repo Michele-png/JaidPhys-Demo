@@ -15,12 +15,13 @@ st.write("Inserisci il feedback che vuoi inviare allo spettatore.")
 
 # Campo di input per il feedback
 feedback_input = st.text_area("Feedback sullo spettatore:", height=300)
+action = st.selectbox('Azioni', ['Seleziona...', 'Chiudi l\'app Firebase'])
 
 
 
 # Inizializza l'app Firebase
 cred = credentials.Certificate(r"C:\Users\User\Downloads\jaidphysdemo-firebase-adminsdk-pxz38-e46d20f07e.json")
-firebase_admin.initialize_app(cred)
+user_app = firebase_admin.initialize_app(cred)
 
 # Ottieni una istanza di Firestore
 db = firestore.client()
@@ -52,3 +53,10 @@ if st.checkbox("Mostra Feedback"):
             print(fb.to_dict()['content'])        
     except Exception as e:
         st.error(f"Errore nella lettura dei feedback: {e}")
+
+if action == 'Chiudi l\'app Firebase':
+    try:
+        firebase_admin.delete_app(user_app)
+        st.success("Connessione a Firebase chiusa con successo!")
+    except Exception as e:
+        st.error(f"Errore nella chiusura della connessione a Firebase: {e}")
