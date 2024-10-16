@@ -1,6 +1,6 @@
 # user_app.py
 import streamlit as st
-from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
+from streamlit_webrtc import VideoTransformerBase, webrtc_streamer, WebRtcMode
 import asyncio
 import sqlite3
 
@@ -21,6 +21,7 @@ class VideoTransformer(VideoTransformerBase):
 # Avvia lo streamer
 webrtc_ctx = webrtc_streamer(
     key="spettatore-video",
+    mode=WebRtcMode.SENDRECV,
     video_transformer_factory=VideoTransformer,
     media_stream_constraints={"video": True, "audio": False},
 )
