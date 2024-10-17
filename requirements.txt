@@ -5,3 +5,4 @@ av
 mediapipe
 firebase-admin
 numpy
+aiortc
