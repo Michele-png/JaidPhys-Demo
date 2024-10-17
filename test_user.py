@@ -1,5 +1,6 @@
 import streamlit as st
-from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
+from streamlit_webrtc import WebRtcMode, VideoTransformerBase, webrtc_streamer
+from sample_utils.turn import get_ice_servers
 
 class VideoTransformer(VideoTransformerBase):
     def transform(self, frame):
@@ -11,11 +12,34 @@ def main():
     st.write("This app captures the camera image stream and displays it on the interface.")
 
     # Set up the WebRTC streamer with STUN server
-    webrtc_streamer(
-        key="example", 
-        video_transformer_factory=VideoTransformer,
-        stun_servers=["stun:stun.l.google.com:19302"]  # Google STUN server
+    webrtc_ctx = webrtc_streamer(
+        key="posture-detection",
+        mode=WebRtcMode.SENDRECV,
+        rtc_configuration={
+            "iceServers": get_ice_servers(),
+            "iceTransportPolicy": "relay",
+        },
+        video_processor_factory=VideoTransformer,
+        # video_frame_callback=video_frame_callback,
+        media_stream_constraints={"video": True, "audio": False},
+        async_processing=True,
     )
 
 if __name__ == "__main__":
     main()
+
+
+
+
+    webrtc_ctx = webrtc_streamer(
+        key="posture-detection",
+        mode=WebRtcMode.SENDRECV,
+        rtc_configuration={
+            "iceServers": get_ice_servers(),
+            "iceTransportPolicy": "relay",
+        },
+        video_processor_factory=VideoTransformer,
+        # video_frame_callback=video_frame_callback,
+        media_stream_constraints={"video": True, "audio": False},
+        async_processing=True,
+    )
