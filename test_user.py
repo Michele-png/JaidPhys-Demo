@@ -11,7 +11,7 @@ def main():
     st.write("This app captures the camera image stream and displays it on the interface.")
 
     # Set up the WebRTC streamer
-    webrtc_streamer(key="example", video_transformer_factory=VideoTransformer)
+    webrtc_streamer(key="example", video_processor_factory =VideoTransformer)
 
 if __name__ == "__main__":
     main()
