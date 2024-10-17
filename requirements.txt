@@ -1,6 +1,8 @@
-streamlit
-streamlit-webrtc
-opencv-python-headless==4.10.0.84
-pandas
-numpy
-mediapipe
+streamlit==1.26.0   # Use the latest version of Streamlit or adjust based on compatibility
+streamlit-webrtc==0.45.0  # To enable the WebRTC component
+opencv-python-headless  # OpenCV for image processing, use 'headless' for environments without a GUI
+av==10.0.0  # PyAV, required for video handling with WebRTC
+mediapipe==0.10.3  # Mediapipe for pose estimation
+firebase-admin==6.1.0  # Firebase admin SDK for Firestore integration
+numpy==1.23.5  # For numerical operations on images
+
