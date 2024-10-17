@@ -1,6 +1,7 @@
-streamlit-webrtc==0.45.0
+streamlit
+streamlit-webrtc
 opencv-python-headless
-av==10.0.0
-mediapipe==0.10.3
-firebase-admin==6.1.0
-numpy==1.23.5
+av
+mediapipe
+firebase-admin
+numpy
