@@ -1,7 +1,0 @@
-streamlit
-streamlit-webrtc
-opencv-python-headless
-av
-mediapipe
-firebase-admin
-numpy
