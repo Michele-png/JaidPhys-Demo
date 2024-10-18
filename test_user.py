@@ -10,6 +10,7 @@ class VideoProcessor:
 
 RTC_CONFIGURATION = RTCConfiguration(
     {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+)
     
 st.title("Camera Stream with Streamlit WebRTC")
 st.write("This app captures the camera image stream and displays it on the interface.")
