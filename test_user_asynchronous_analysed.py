@@ -1,8 +1,9 @@
 import streamlit as st
-import cv2
 import tempfile
 import mediapipe as mp
 import numpy as np
+from PIL import Image, ImageDraw
+import cv2
 
 # Initialize Mediapipe pose detector
 mp_pose = mp.solutions.pose
@@ -38,36 +39,36 @@ if video_file is not None:
         if not ret:
             break
         
-        # Convert the frame to RGB (Mediapipe uses RGB)
+        # Convert the frame to RGB
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        
+
+        # Convert to Pillow Image
+        pil_image = Image.fromarray(frame_rgb)
+
         # Perform pose detection
-        result = pose.process(frame_rgb)
-        
+        result = pose.process(np.array(pil_image))
+
         # If pose landmarks are detected, draw them on the frame
         if result.pose_landmarks:
-            mp_drawing.draw_landmarks(
-                frame, 
-                result.pose_landmarks, 
-                mp_pose.POSE_CONNECTIONS,
-                mp_drawing.DrawingSpec(color=(0, 255, 0), thickness=2, circle_radius=2),
-                mp_drawing.DrawingSpec(color=(0, 0, 255), thickness=2, circle_radius=2)
-            )
+            draw = ImageDraw.Draw(pil_image)
+            for landmark in result.pose_landmarks.landmark:
+                x = int(landmark.x * width)
+                y = int(landmark.y * height)
+                draw.ellipse((x - 5, y - 5, x + 5, y + 5), fill=(255, 0, 0))
         
-        # Convert back to BGR (for OpenCV compatibility) and save the processed frame
-        frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-        processed_frames.append(frame_bgr)
+        # Append the processed PIL image back to frames
+        processed_frames.append(np.array(pil_image))
     
     cap.release()
-    
+
     # Create a temporary file to save the processed video
     out_file = tempfile.NamedTemporaryFile(delete=False, suffix='.mp4')
     out_video_path = out_file.name
 
-    # Write the processed frames into a new video file
+    # Write the processed frames into a new video file using OpenCV
     out = cv2.VideoWriter(out_video_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
     for processed_frame in processed_frames:
-        out.write(processed_frame)
+        out.write(cv2.cvtColor(processed_frame, cv2.COLOR_RGB2BGR))
     out.release()
 
     # Display the processed video in the Streamlit app
