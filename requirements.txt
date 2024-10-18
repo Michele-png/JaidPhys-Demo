@@ -6,3 +6,4 @@ mediapipe
 firebase-admin
 numpy
 twilio
+Pillow
