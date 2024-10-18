@@ -1,5 +1,5 @@
 import streamlit as st
-from streamlit_webrtc import WebRtcMode, VideoTransformerBase, webrtc_streamer
+from streamlit_webrtc import WebRtcMode, VideoTransformerBase, webrtc_streamer, RTCConfiguration
 from sample_utils.turn import get_ice_servers
 import av
 
@@ -20,12 +20,11 @@ def main():
     webrtc_ctx = webrtc_streamer(
         key="posture-detection",
         mode=WebRtcMode.SENDRECV,
-        rtc_configuration={
-            "iceServers": get_ice_servers(),
-            "iceTransportPolicy": "relay",
-        },
+        rtc_configuration=RTC_CONFIGURATION = RTCConfiguration(
+            {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+        ),
         # video_processor_factory=VideoTransformer,
-        video_frame_callback=video_frame_callback,
+        # video_frame_callback=video_frame_callback,
         media_stream_constraints={"video": True, "audio": False},
         async_processing=True,
     )
