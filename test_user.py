@@ -22,7 +22,7 @@ def main():
         video_processor_factory=VideoTransformer,
         # video_frame_callback=video_frame_callback,
         media_stream_constraints={"video": True, "audio": False},
-        async_processing=True,
+        async_processing=False,
     )
 
 if __name__ == "__main__":
