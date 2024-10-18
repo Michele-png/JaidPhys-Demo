@@ -20,7 +20,7 @@ def main():
     webrtc_ctx = webrtc_streamer(
         key="posture-detection",
         mode=WebRtcMode.SENDRECV,
-        rtc_configuration=RTC_CONFIGURATION = RTCConfiguration(
+        rtc_configuration = RTCConfiguration(
             {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
         ),
         # video_processor_factory=VideoTransformer,
