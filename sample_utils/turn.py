@@ -19,9 +19,14 @@ def get_ice_servers():
         # auth_token = os.environ["TWILIO_AUTH_TOKEN"]    
         account_sid = os.getenv["TWILIO_ACCOUNT_SID"]
         auth_token = os.getenv["TWILIO_AUTH_TOKEN"]
-    except KeyError:
+    # except KeyError:
+    #     logger.warning(
+    #         "Twilio credentials are not set. Fallback to a free STUN server from Google."  # noqa: E501
+    #     )
+    #     return [{"urls": ["stun:stun.l.google.com:19302"]}]
+    except Exception as e:
         logger.warning(
-            "Twilio credentials are not set. Fallback to a free STUN server from Google."  # noqa: E501
+            e
         )
         return [{"urls": ["stun:stun.l.google.com:19302"]}]
 
