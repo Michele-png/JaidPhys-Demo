@@ -21,4 +21,6 @@ def overlaid_video():
   
 
 def main():
-  st.set_page_config(layout="centered", page_title="实时人脸识别")
+    st.set_page_config(layout="centered", page_title="Posture Detection Demonstration")
+    
+    video_file = st.file_uploader("Upload a video", type=["mp4", "mov", "avi", "mkv"])
