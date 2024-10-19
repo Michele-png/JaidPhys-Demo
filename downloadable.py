@@ -16,8 +16,8 @@ def process_video(video_path, output_path):
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = cap.get(cv2.CAP_PROP_FPS)
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Use mp4 codec for compatibility
+
     # Output video writer
     out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
@@ -53,18 +53,22 @@ if uploaded_file is not None:
     tfile = tempfile.NamedTemporaryFile(delete=False)
     tfile.write(uploaded_file.read())
 
-    st.video(uploaded_file)  # Show the uploaded video
+    # Show the uploaded video before processing
+    st.video(uploaded_file)  
 
     # Process the video and overlay pose estimation lines
     output_path = os.path.join(tempfile.gettempdir(), 'processed_video.mp4')
     st.text("Processing video... this might take a while.")
     process_video(tfile.name, output_path)
 
-    # Show the processed video
+    # Convert the processed video to bytes for display
+    with open(output_path, 'rb') as video_file:
+        video_bytes = video_file.read()
+
+    # Display the processed video using video bytes
     st.text("Here is the processed video:")
-    st.video(output_path)
+    st.video(video_bytes)
 
     # Allow download of the processed video
     with open(output_path, "rb") as f:
         st.download_button("Download processed video", f, file_name="processed_video.mp4")
-
