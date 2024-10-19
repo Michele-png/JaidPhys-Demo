@@ -3,56 +3,44 @@ import cv2
 import mediapipe as mp
 import tempfile
 import os
-import subprocess
+import moviepy.editor as mpy
 
 # Initialize MediaPipe Pose model
 mp_pose = mp.solutions.pose
 pose = mp_pose.Pose()
 mp_drawing = mp.solutions.drawing_utils
 
-def process_video(input_video_path, output_video_path):
-    cap = cv2.VideoCapture(input_video_path)
-    
-    # Get frame properties
+def process_video(video_path, output_path):
+    # Read the video
+    cap = cv2.VideoCapture(video_path)
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = cap.get(cv2.CAP_PROP_FPS)
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Using 'mp4v' codec for compatibility
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     
-    # Create video writer object
-    temp_output_path = output_video_path + '.tmp.mp4'  # Temporary output before re-encoding
-    out = cv2.VideoWriter(temp_output_path, fourcc, fps, (width, height))
-    
-    # Process video frames
+    # Output video writer
+    out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
         
-        # Convert frame from BGR to RGB for pose detection
+        # Convert the frame to RGB
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        
-        # Perform pose detection
         results = pose.process(rgb_frame)
         
-        # Draw pose landmarks if detected
         if results.pose_landmarks:
-            mp_drawing.draw_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+            # Draw the pose annotations on the frame
+            mp_drawing.draw_landmarks(
+                frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
         
-        # Write the processed frame to the output video (back to BGR for OpenCV)
+        # Write the processed frame to the output video
         out.write(frame)
-
+    
     # Release resources
     cap.release()
     out.release()
-
-    # Re-encode video to ensure browser compatibility using ffmpeg
-    subprocess.run([
-        'ffmpeg', '-i', temp_output_path, '-vcodec', 'libx264', '-crf', '28', '-preset', 'slow', output_video_path
-    ], check=True)
-
-    # Clean up temporary file
-    os.remove(temp_output_path)
 
 # Streamlit Web App Interface
 st.title("Pose Estimation on Video")
@@ -65,23 +53,18 @@ if uploaded_file is not None:
     tfile = tempfile.NamedTemporaryFile(delete=False)
     tfile.write(uploaded_file.read())
 
-    # Show the uploaded video before processing
-    st.video(uploaded_file)
+    st.video(uploaded_file)  # Show the uploaded video
 
     # Process the video and overlay pose estimation lines
     output_path = os.path.join(tempfile.gettempdir(), 'processed_video.mp4')
-    
     st.text("Processing video... this might take a while.")
     process_video(tfile.name, output_path)
-    
-    # Convert the processed video to bytes for display
-    with open(output_path, 'rb') as video_file:
-        video_bytes = video_file.read()
 
-    # Display the processed video using video bytes
+    # Show the processed video
     st.text("Here is the processed video:")
-    st.video(video_bytes)
+    st.video(output_path)
 
     # Allow download of the processed video
     with open(output_path, "rb") as f:
         st.download_button("Download processed video", f, file_name="processed_video.mp4")
+
