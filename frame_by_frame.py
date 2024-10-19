@@ -28,8 +28,9 @@ if uploaded_file is not None:
     # Frame rate control (for smooth playback)
     fps = vf.get(cv.CAP_PROP_FPS)
     st.write(f"fps: {fps}")
-    delay = 1.5 / fps if fps > 0 else 0.03  # Adjust delay based on video fps
+    delay = 2 / fps if fps > 0 else 0.03  # Adjust delay based on video fps
     st.write(f"delay: {delay}")
+    n_skipped = 1
     total_frames = int(vf.get(cv.CAP_PROP_FRAME_COUNT))
     st.write(f"Total frames in video: {total_frames}")
 
@@ -51,7 +52,7 @@ if uploaded_file is not None:
                 frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
 
         # Update the display conditionally to avoid overload
-        if frame_counter % 1 == 0:  # Only update every n frames
+        if frame_counter % n_skipped == 0:  # Only update every n frames
             stframe.image(frame, channels="BGR", use_column_width=True)  # Display in original color (BGR format)
 
         # Display current frame number
