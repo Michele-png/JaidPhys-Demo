@@ -30,7 +30,7 @@ if uploaded_file is not None:
     st.write(f"fps: {fps}")
     delay = 10 / fps if fps > 0 else 0.03  # Adjust delay based on video fps
     st.write(f"delay: {delay}")
-    n_skipped = 1
+    n_skipped = 3
     total_frames = int(vf.get(cv.CAP_PROP_FRAME_COUNT))
     st.write(f"Total frames in video: {total_frames}")
 
