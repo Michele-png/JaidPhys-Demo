@@ -28,7 +28,7 @@ if uploaded_file is not None:
     # Frame rate control (for smooth playback)
     fps = vf.get(cv.CAP_PROP_FPS)
     st.write(f"fps: {fps}")
-    delay = 2 / fps if fps > 0 else 0.03  # Adjust delay based on video fps
+    delay = 10 / fps if fps > 0 else 0.03  # Adjust delay based on video fps
     st.write(f"delay: {delay}")
     n_skipped = 1
     total_frames = int(vf.get(cv.CAP_PROP_FRAME_COUNT))
