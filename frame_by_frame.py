@@ -27,8 +27,7 @@ if uploaded_file is not None:
 
     # Frame rate control (for smooth playback)
     fps = vf.get(cv.CAP_PROP_FPS)
-    n_skipped = 3
-    delay = 0.05
+    delay = 1 / fps if fps > 0 else 0.03  # Adjust delay based on video fps
     total_frames = int(vf.get(cv.CAP_PROP_FRAME_COUNT))
     st.write(f"Total frames in video: {total_frames}")
 
@@ -39,25 +38,25 @@ if uploaded_file is not None:
         if not ret:
             st.text(f"Can't receive frame at frame number {frame_counter} (stream end?). Exiting ...")
             break
-        # Update the display conditionally to avoid overload
-        if frame_counter % n_skipped == 0:  # Only update every n frames
 
-            # Convert the frame to RGB for MediaPipe processing
-            rgb_frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-            results = pose.process(rgb_frame)
-    
-            # Draw pose landmarks on the frame
-            if results.pose_landmarks:
-                mp_drawing.draw_landmarks(
-                    frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
-    
+        # Convert the frame to RGB for MediaPipe processing
+        rgb_frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+        results = pose.process(rgb_frame)
+
+        # Draw pose landmarks on the frame
+        if results.pose_landmarks:
+            mp_drawing.draw_landmarks(
+                frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+
+        # Update the display conditionally to avoid overload
+        if frame_counter % 4 == 0:  # Only update every n frames
             stframe.image(frame, channels="BGR", use_column_width=True)  # Display in original color (BGR format)
-            
-            # Display current frame number
-            st.write(f"Current frame: {frame_counter}")
-    
-            # Add a delay to control frame rendering speed
-            time.sleep(delay)
+
+        # Display current frame number
+        st.write(f"Current frame: {frame_counter}")
+
+        # Add a delay to control frame rendering speed
+        time.sleep(0.05)
 
         frame_counter += 1  # Increment frame counter
 
