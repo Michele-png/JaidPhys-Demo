@@ -2,6 +2,7 @@ import streamlit as st
 import cv2 as cv
 import tempfile
 import mediapipe as mp
+import numpy as np
 import time
 
 # Initialize MediaPipe Pose model
@@ -45,6 +46,7 @@ if uploaded_file is not None:
             mp_drawing.draw_landmarks(
                 frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
 
+        # Convert the frame back to BGR for display
         # Display the processed frame in Streamlit in color
         stframe.image(frame, channels="BGR")  # Display in original color (BGR format)
 
