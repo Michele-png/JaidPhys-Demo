@@ -2,7 +2,6 @@ import streamlit as st
 import cv2 as cv
 import tempfile
 import mediapipe as mp
-import numpy as np
 import time
 
 # Initialize MediaPipe Pose model
@@ -28,7 +27,9 @@ if uploaded_file is not None:
 
     # Frame rate control (for smooth playback)
     fps = vf.get(cv.CAP_PROP_FPS)
+    st.write(f"fps: {fps}")
     delay = 1 / fps if fps > 0 else 0.03  # Adjust delay based on video fps
+    st.write(f"delay: {delay}")
     total_frames = int(vf.get(cv.CAP_PROP_FRAME_COUNT))
     st.write(f"Total frames in video: {total_frames}")
 
@@ -36,11 +37,10 @@ if uploaded_file is not None:
 
     while vf.isOpened():
         ret, frame = vf.read()
-        st.write(f"Frame read status: {ret}")  # Debugging line
         if not ret:
             st.text(f"Can't receive frame at frame number {frame_counter} (stream end?). Exiting ...")
             break
-
+        
         # Convert the frame to RGB for MediaPipe processing
         rgb_frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
         results = pose.process(rgb_frame)
@@ -51,7 +51,10 @@ if uploaded_file is not None:
                 frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
 
         # Display the processed frame in Streamlit in color
-        stframe.image(frame, channels="BGR")  # Display in original color (BGR format)
+        stframe.image(frame, channels="BGR", use_column_width=True)  # Display in original color (BGR format)
+
+        # Display current frame number
+        st.write(f"Current frame: {frame_counter}")
 
         # Add a delay to control frame rendering speed
         time.sleep(delay)
