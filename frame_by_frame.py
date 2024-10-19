@@ -49,7 +49,7 @@ if uploaded_file is not None:
                 frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
 
         # Update the display conditionally to avoid overload
-        if frame_counter % 4 == 0:  # Only update every 4 frames
+        if frame_counter % 3 == 0:  # Only update every 3 frames
             stframe.image(frame, channels="BGR", use_column_width=True)  # Display in original color (BGR format)
 
         # Display current frame number
