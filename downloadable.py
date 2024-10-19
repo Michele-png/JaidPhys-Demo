@@ -3,7 +3,6 @@ import cv2
 import mediapipe as mp
 import tempfile
 import os
-from moviepy.editor import VideoFileClip
 
 # Initialize MediaPipe Pose model
 mp_pose = mp.solutions.pose
@@ -11,37 +10,39 @@ pose = mp_pose.Pose()
 mp_drawing = mp.solutions.drawing_utils
 
 def process_video(input_video_path, output_video_path):
-    # Read the video
     cap = cv2.VideoCapture(input_video_path)
-    frames = []
-    fps = cap.get(cv2.CAP_PROP_FPS)
+    
+    # Get frame properties
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Using 'mp4v' codec for compatibility
+    
+    # Create video writer object
+    out = cv2.VideoWriter(output_video_path, fourcc, fps, (width, height))
+    
+    # Process video frames
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
-
-        # Convert the frame to RGB for MediaPipe
+        
+        # Convert frame from BGR to RGB for pose detection
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        
+        # Perform pose detection
         results = pose.process(rgb_frame)
-
+        
         # Draw pose landmarks if detected
         if results.pose_landmarks:
-            mp_drawing.draw_landmarks(
-                frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+            mp_drawing.draw_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+        
+        # Write the processed frame to the output video (back to BGR for OpenCV)
+        out.write(frame)
 
-        # Convert back to RGB for Streamlit and MoviePy (from BGR)
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        frames.append(frame)
-
+    # Release resources
     cap.release()
-
-    # Use MoviePy to write video with proper encoding for web
-    clip = VideoFileClip(input_video_path)
-    new_clip = clip.set_fps(fps).fl_image(lambda img: frames.pop(0))
-    new_clip.write_videofile(output_video_path, codec="libx264", audio=False)
+    out.release()
 
 # Streamlit Web App Interface
 st.title("Pose Estimation on Video")
@@ -59,9 +60,10 @@ if uploaded_file is not None:
 
     # Process the video and overlay pose estimation lines
     output_path = os.path.join(tempfile.gettempdir(), 'processed_video.mp4')
+    
     st.text("Processing video... this might take a while.")
     process_video(tfile.name, output_path)
-
+    
     # Convert the processed video to bytes for display
     with open(output_path, 'rb') as video_file:
         video_bytes = video_file.read()
