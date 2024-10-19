@@ -49,14 +49,14 @@ if uploaded_file is not None:
                 frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
 
         # Update the display conditionally to avoid overload
-        if frame_counter % 4 == 0:  # Only update every n frames
+        if frame_counter % 3 == 0:  # Only update every n frames
             stframe.image(frame, channels="BGR", use_column_width=True)  # Display in original color (BGR format)
 
         # Display current frame number
         st.write(f"Current frame: {frame_counter}")
 
         # Add a delay to control frame rendering speed
-        time.sleep(0.05)
+        time.sleep(0.04)
 
         frame_counter += 1  # Increment frame counter
 
