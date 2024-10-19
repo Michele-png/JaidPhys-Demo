@@ -56,7 +56,7 @@ if uploaded_file is not None:
         st.write(f"Current frame: {frame_counter}")
 
         # Add a delay to control frame rendering speed
-        time.sleep(delay)
+        time.sleep(0.1)
 
         frame_counter += 1  # Increment frame counter
 
