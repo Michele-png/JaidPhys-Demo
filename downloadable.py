@@ -3,6 +3,7 @@ import cv2
 import mediapipe as mp
 import tempfile
 import os
+import subprocess
 
 # Initialize MediaPipe Pose model
 mp_pose = mp.solutions.pose
@@ -19,7 +20,8 @@ def process_video(input_video_path, output_video_path):
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Using 'mp4v' codec for compatibility
     
     # Create video writer object
-    out = cv2.VideoWriter(output_video_path, fourcc, fps, (width, height))
+    temp_output_path = output_video_path + '.tmp.mp4'  # Temporary output before re-encoding
+    out = cv2.VideoWriter(temp_output_path, fourcc, fps, (width, height))
     
     # Process video frames
     while cap.isOpened():
@@ -43,6 +45,14 @@ def process_video(input_video_path, output_video_path):
     # Release resources
     cap.release()
     out.release()
+
+    # Re-encode video to ensure browser compatibility using ffmpeg
+    subprocess.run([
+        'ffmpeg', '-i', temp_output_path, '-vcodec', 'libx264', '-crf', '28', '-preset', 'slow', output_video_path
+    ], check=True)
+
+    # Clean up temporary file
+    os.remove(temp_output_path)
 
 # Streamlit Web App Interface
 st.title("Pose Estimation on Video")
