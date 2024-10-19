@@ -54,9 +54,10 @@ if uploaded_file is not None:
         # Update the display conditionally to avoid overload
         if frame_counter % n_skipped == 0:  # Only update every n frames
             stframe.image(frame, channels="BGR", use_column_width=True)  # Display in original color (BGR format)
+            # Display current frame number
+            st.write(f"Current frame: {frame_counter}")
 
-        # Display current frame number
-        st.write(f"Current frame: {frame_counter}")
+        
 
         # Add a delay to control frame rendering speed
         time.sleep(delay)
