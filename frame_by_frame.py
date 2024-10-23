@@ -76,9 +76,7 @@ if uploaded_file is not None:
 async def get_feedback():
     try:
         # Inizializza l'app Firebase
-        firebase_key = os.getenv('FIREBASE_SERVICE_ACCOUNT_KEY')
-        service_account_info = json.loads(firebase_key)
-        cred = credentials.Certificate(service_account_info)
+        cred = credentials.Certificate(**st.secrets.FIREBASE_SERVICE_ACCOUNT_KEY)
         try:
             user_app = firebase_admin.initialize_app(cred)
         except Exception as e:
