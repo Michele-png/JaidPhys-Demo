@@ -29,21 +29,19 @@ if uploaded_file is not None:
 
     stframe = st.empty()  # Placeholder for displaying frames
 
-    # Frame rate control (for smooth playback)
+    # Frame rate control
     fps = vf.get(cv.CAP_PROP_FPS)
-    st.write(f"fps: {fps}")
-    delay = 5 / fps if fps > 0 else 0.03  # Adjust delay based on video fps
-    st.write(f"delay: {delay}")
+    delay = 2 / fps if fps > 0 else 0.03  # Adjust delay based on video fps
     n_skipped = 5
     total_frames = int(vf.get(cv.CAP_PROP_FRAME_COUNT))
-    st.write(f"Total frames in video: {total_frames}")
+    st.success(f"fps: {fps}; frames between pictures: {n_skipped}; delay: {delay}; Total frames in video: {total_frames}")
 
     frame_counter = 0  # Initialize frame counter
 
     while vf.isOpened():
         ret, frame = vf.read()
         if not ret:
-            st.text(f"Can't receive frame at frame number {frame_counter} (stream end?). Exiting ...")
+            st.success(f"Analysis Ended, {int(total_frames\n_skipped)} Frames Analysed. Feedback Ready ...")
             break
 
         # Convert the frame to RGB for MediaPipe processing
