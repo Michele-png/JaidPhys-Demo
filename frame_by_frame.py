@@ -75,31 +75,11 @@ if uploaded_file is not None:
 async def get_feedback():
     try:
         # Load the TOML content from an environment variable
-        # toml_content = st.secrets["FIREBASE_SERVICE_ACCOUNT_KEY"]
         credentials_data = st.secrets.FIREBASE_SERVICE_ACCOUNT_KEY
     except Exception as e:
         st.error(f"Errore nella lettura delle credenziali: {e}")
-    # try:
-    #     # Parse the TOML content
-    #     credentials_data = toml.loads(toml_content)
-    # except Exception as e:
-    #     st.error(f"Errore nella parcellizzazione delle credenziali: {e}") 
+        
     try:
-        # Create a certificate using the credentials
-        # cred = credentials.Certificate({
-        #     "type": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["type"],
-        #     "project_id": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["project_id"],
-        #     "private_key_id": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["private_key_id"],
-        #     "private_key": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["private_key"].replace("\\n", "\n"),  # replace line breaks
-        #     "client_email": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["client_email"],
-        #     "client_id": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["client_id"],
-        #     "auth_uri": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["auth_uri"],
-        #     "token_uri": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["token_uri"],
-        #     "auth_provider_x509_cert_url": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["auth_provider_x509_cert_url"],
-        #     "client_x509_cert_url": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["client_x509_cert_url"],
-        #     "universe_domain": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["universe_domain"]
-        # })
-
         cred = credentials.Certificate({
             "type": credentials_data.type,
             "project_id": credentials_data.project_id,
@@ -113,9 +93,9 @@ async def get_feedback():
             "client_x509_cert_url": credentials_data.client_x509_cert_url,
             "universe_domain": credentials_data.universe_domain
         })
-
     except Exception as e:
         st.error(f"Errore nella conversione delle credenziali: {e}")
+        
     try:
         if not firebase_admin._apps:
             firebase_admin.initialize_app(cred)
