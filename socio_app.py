@@ -78,10 +78,3 @@ if st.checkbox("Mostra Feedback"):
             st.text_area("Feedback:", value=fb.to_dict()['content'], height=200, disabled=True)      
     except Exception as e:
         st.error(f"Errore nella lettura dei feedback: {e}")
-
-# if action == 'Chiudi l\'app Firebase':
-#     try:
-#         firebase_admin.delete_app(user_app)
-#         st.success("Connessione a Firebase chiusa con successo!")
-#     except Exception as e:
-#         st.error(f"Errore nella chiusura della connessione a Firebase: {e}")
