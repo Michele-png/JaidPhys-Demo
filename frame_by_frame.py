@@ -66,3 +66,35 @@ if uploaded_file is not None:
         frame_counter += 1  # Increment frame counter
 
     vf.release()  # Release video capture object
+
+# Funzione asincrona per leggere feedback dal database
+async def get_feedback():
+    try:
+        # Inizializza l'app Firebase
+        cred = credentials.Certificate(secrets.FIREBASE_SERVICE_ACCOUNT_KEY)
+        try:
+            user_app = firebase_admin.initialize_app(cred)
+        except Exception as e:
+            st.error(f'{e}')
+
+        db = firestore.client()
+
+        feedback_ref = db.collection('feedback').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1)
+        feedback = feedback_ref.stream()
+        if feedback: 
+            for fb in feedback:
+                return (fb.to_dict()['content'])
+        else:
+            return "Nessun feedback disponibile."
+    except Exception as e:
+        return f"Errore nella lettura del feedback: {e}"
+
+# Bottone per aggiornare il feedback
+if st.button("Aggiorna Feedback"):
+    feedback = asyncio.run(get_feedback())
+    st.text_area("Feedback", value=feedback, height=300, disabled=True)
+    try:
+        firebase_admin.delete_app(user_app)
+        st.success("Connessione a Firebase chiusa con successo!")
+    except Exception as e:
+        st.error(f"Errore nella chiusura della connessione a Firebase: {e}")
