@@ -74,7 +74,6 @@ if uploaded_file is not None:
 # Funzione asincrona per leggere feedback dal database
 async def get_feedback():
     try:
-        # Inizializza l'app Firebase
         # Load the TOML content from an environment variable
         toml_content = st.secrets["FIREBASE_SERVICE_ACCOUNT_KEY"]
         # Parse the TOML content
@@ -93,15 +92,21 @@ async def get_feedback():
             "client_x509_cert_url": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["client_x509_cert_url"],
             "universe_domain": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["universe_domain"]
         })
-        try:
-            if not firebase_admin._apps:
-                firebase_admin.initialize_app(cred)
-        except Exception as e:
-            st.error(f'{e}')
+    except Exception as e:
+        st.error(f"Errore nel recupero delle credenziali: {e}")
+    try:
+        if not firebase_admin._apps:
+            firebase_admin.initialize_app(cred)
+    except Exception as e:
+        st.error(f"Errore nello stabilire una connessione: {e}")
 
+    try:
         db = firestore.client()
-
         feedback_ref = db.collection('feedback').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1)
+    except Exception as e:
+        st.error(f"Errore nelrecupero del feedback: {e}")
+        
+    try:
         feedback = feedback_ref.stream()
         if feedback: 
             for fb in feedback:
@@ -109,7 +114,7 @@ async def get_feedback():
         else:
             return "Nessun feedback disponibile."
     except Exception as e:
-        return f"Errore nella lettura del feedback: {e}"
+        return f"Errore nella scrittura del feedback: {e}"
 
 # Bottone per aggiornare il feedback
 if st.button("Aggiorna Feedback"):
