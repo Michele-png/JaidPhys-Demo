@@ -101,17 +101,17 @@ async def get_feedback():
         # })
 
         cred = credentials.Certificate({
-            "type": credentials_data.FIREBASE_SERVICE_ACCOUNT_KEY.type,
-            "project_id": credentials_data.FIREBASE_SERVICE_ACCOUNT_KEY.project_id,
-            "private_key_id": credentials_data.FIREBASE_SERVICE_ACCOUNT_KEY.private_key_id,
-            "private_key": credentials_data.FIREBASE_SERVICE_ACCOUNT_KEY.private_key.replace("\\n", "\n"),  # replace line breaks
-            "client_email": credentials_data.FIREBASE_SERVICE_ACCOUNT_KEY.client_email,
-            "client_id": credentials_data.FIREBASE_SERVICE_ACCOUNT_KEY.client_id,
-            "auth_uri": credentials_data.FIREBASE_SERVICE_ACCOUNT_KEY.auth_uri,
-            "token_uri": credentials_data.FIREBASE_SERVICE_ACCOUNT_KEY.token_uri,
-            "auth_provider_x509_cert_url": credentials_data.FIREBASE_SERVICE_ACCOUNT_KEY.auth_provider_x509_cert_url,
-            "client_x509_cert_url": credentials_data.FIREBASE_SERVICE_ACCOUNT_KEY.client_x509_cert_url,
-            "universe_domain": credentials_data.FIREBASE_SERVICE_ACCOUNT_KEY.universe_domain
+            "type": credentials_data.type,
+            "project_id": credentials_data.project_id,
+            "private_key_id": credentials_data.private_key_id,
+            "private_key": credentials_data.private_key.replace("\\n", "\n"),  # replace line breaks
+            "client_email": credentials_data.client_email,
+            "client_id": credentials_data.client_id,
+            "auth_uri": credentials_data.auth_uri,
+            "token_uri": credentials_data.token_uri,
+            "auth_provider_x509_cert_url": credentials_data.auth_provider_x509_cert_url,
+            "client_x509_cert_url": credentials_data.client_x509_cert_url,
+            "universe_domain": credentials_data.universe_domain
         })
 
     except Exception as e:
