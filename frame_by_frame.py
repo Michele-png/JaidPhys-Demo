@@ -3,6 +3,9 @@ import cv2 as cv
 import tempfile
 import mediapipe as mp
 import time
+import asyncio
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 # Initialize MediaPipe Pose model
 mp_pose = mp.solutions.pose
