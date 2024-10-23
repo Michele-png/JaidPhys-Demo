@@ -76,8 +76,14 @@ async def get_feedback():
     try:
         # Load the TOML content from an environment variable
         toml_content = st.secrets["FIREBASE_SERVICE_ACCOUNT_KEY"]
+    except Exception as e:
+        st.error(f"Errore nella lettura delle credenziali: {e}")
+    try:
         # Parse the TOML content
         credentials_data = toml.loads(toml_content)
+    except Exception as e:
+        st.error(f"Errore nella parcellizzazione delle credenziali: {e}") 
+    try:
         # Create a certificate using the credentials
         cred = credentials.Certificate({
             "type": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["type"],
@@ -93,7 +99,7 @@ async def get_feedback():
             "universe_domain": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["universe_domain"]
         })
     except Exception as e:
-        st.error(f"Errore nel recupero delle credenziali: {e}")
+        st.error(f"Errore nella conversione delle credenziali: {e}")
     try:
         if not firebase_admin._apps:
             firebase_admin.initialize_app(cred)
@@ -114,7 +120,7 @@ async def get_feedback():
         else:
             return "Nessun feedback disponibile."
     except Exception as e:
-        return f"Errore nella scrittura del feedback: {e}"
+        st.error(f"Errore nella scrittura del feedback: {e}")
 
 # Bottone per aggiornare il feedback
 if st.button("Aggiorna Feedback"):
