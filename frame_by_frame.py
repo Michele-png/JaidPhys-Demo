@@ -31,10 +31,10 @@ if uploaded_file is not None:
 
     # Frame rate control
     fps = vf.get(cv.CAP_PROP_FPS)
-    delay = 2 / fps if fps > 0 else 0.03  # Adjust delay based on video fps
+    delay = 5 / fps if fps > 0 else 0.03  # Adjust delay based on video fps
     n_skipped = 5
     total_frames = int(vf.get(cv.CAP_PROP_FRAME_COUNT))
-    st.success(f"fps: {fps}; frames between pictures: {n_skipped}; delay: {delay}; Total frames in video: {total_frames}")
+    st.success(f"fps: {rount(fps, 1)}; frames between pictures: {n_skipped}; delay: {rount(delay,1)}; Total frames in video: {total_frames}")
 
     frame_counter = 0  # Initialize frame counter
 
