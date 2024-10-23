@@ -75,14 +75,15 @@ if uploaded_file is not None:
 async def get_feedback():
     try:
         # Load the TOML content from an environment variable
-        toml_content = st.secrets["FIREBASE_SERVICE_ACCOUNT_KEY"]
+        # toml_content = st.secrets["FIREBASE_SERVICE_ACCOUNT_KEY"]
+        credentials_data = st.secrets["FIREBASE_SERVICE_ACCOUNT_KEY"]
     except Exception as e:
         st.error(f"Errore nella lettura delle credenziali: {e}")
-    try:
-        # Parse the TOML content
-        credentials_data = toml.loads(toml_content)
-    except Exception as e:
-        st.error(f"Errore nella parcellizzazione delle credenziali: {e}") 
+    # try:
+    #     # Parse the TOML content
+    #     credentials_data = toml.loads(toml_content)
+    # except Exception as e:
+    #     st.error(f"Errore nella parcellizzazione delle credenziali: {e}") 
     try:
         # Create a certificate using the credentials
         cred = credentials.Certificate({
