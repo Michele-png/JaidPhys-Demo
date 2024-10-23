@@ -3,7 +3,6 @@ import cv2 as cv
 import tempfile
 import mediapipe as mp
 import time
-import toml
 import asyncio
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -41,7 +40,7 @@ if uploaded_file is not None:
     while vf.isOpened():
         ret, frame = vf.read()
         if not ret:
-            st.success(f"Analysis Ended, {int(total_frames\n_skipped)} Frames Analysed. Feedback Ready ...")
+            st.success(f"Analysis Ended, {int(total_frames \ n_skipped)} Frames Analysed. Feedback Ready ...")
             break
 
         # Convert the frame to RGB for MediaPipe processing
