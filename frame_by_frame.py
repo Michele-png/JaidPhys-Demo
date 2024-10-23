@@ -40,7 +40,7 @@ if uploaded_file is not None:
     while vf.isOpened():
         ret, frame = vf.read()
         if not ret:
-            st.success(f"Analysis Ended, {int(total_frames \ n_skipped)} Frames Analysed. Feedback Ready ...")
+            st.success(f"Analysis Ended, {int(total_frames / n_skipped)} Frames Analysed. Feedback Ready ...")
             break
 
         # Convert the frame to RGB for MediaPipe processing
