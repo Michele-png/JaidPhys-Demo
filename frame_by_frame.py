@@ -18,50 +18,48 @@ st.title("Pose Estimation on Video")
 # File uploader
 uploaded_file = st.file_uploader("Upload a video of a person", type=["mp4", "avi", "mov"])
 
-if uploaded_file is not None:
-    # Save the uploaded video to a temporary file
-    tfile = tempfile.NamedTemporaryFile(delete=False)
-    tfile.write(uploaded_file.read())
+if st.button("Analizza Video"):
+    if uploaded_file is not None:
+        # Save the uploaded video to a temporary file
+        tfile = tempfile.NamedTemporaryFile(delete=False)
+        tfile.write(uploaded_file.read())
+    
+        # Open the video file using OpenCV
+        vf = cv.VideoCapture(tfile.name)
+    
+        stframe = st.empty()  # Placeholder for displaying frames
+    
+        # Frame rate control
+        fps = vf.get(cv.CAP_PROP_FPS)
+        delay = 2 / fps if fps > 0 else 0.03  # Adjust delay based on video fps
+        n_skipped = 5
+        total_frames = int(vf.get(cv.CAP_PROP_FRAME_COUNT))
+        st.success(f"fps: {fps}; frames between pictures: {n_skipped}; delay: {delay}; Total frames in video: {total_frames}")
+    
+        frame_counter = 0  # Initialize frame counter
+    
+        while vf.isOpened():
+            ret, frame = vf.read()
+            if not ret:
+                st.success(f"Analysis Ended, {int(total_frames / n_skipped)} Frames Analysed. Feedback Ready ...")
+                break
+    
+            # Convert the frame to RGB for MediaPipe processing
+            rgb_frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+            results = pose.process(rgb_frame)
+    
+            # Draw pose landmarks on the frame
+            if results.pose_landmarks:
+                mp_drawing.draw_landmarks(
+                    frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+    
+            # Update the display conditionally to avoid overload
+            if frame_counter % n_skipped == 0:  # Only update every n frames
+                # Add a delay to control frame rendering speed
+                time.sleep(delay)
+                stframe.image(frame, channels="BGR", use_column_width=True)  # Display in original color (BGR format)      
 
-    # Open the video file using OpenCV
-    vf = cv.VideoCapture(tfile.name)
-
-    stframe = st.empty()  # Placeholder for displaying frames
-
-    # Frame rate control
-    fps = vf.get(cv.CAP_PROP_FPS)
-    delay = 2 / fps if fps > 0 else 0.03  # Adjust delay based on video fps
-    n_skipped = 5
-    total_frames = int(vf.get(cv.CAP_PROP_FRAME_COUNT))
-    st.success(f"fps: {fps}; frames between pictures: {n_skipped}; delay: {delay}; Total frames in video: {total_frames}")
-
-    frame_counter = 0  # Initialize frame counter
-
-    while vf.isOpened():
-        ret, frame = vf.read()
-        if not ret:
-            st.success(f"Analysis Ended, {int(total_frames / n_skipped)} Frames Analysed. Feedback Ready ...")
-            break
-
-        # Convert the frame to RGB for MediaPipe processing
-        rgb_frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-        results = pose.process(rgb_frame)
-
-        # Draw pose landmarks on the frame
-        if results.pose_landmarks:
-            mp_drawing.draw_landmarks(
-                frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
-
-        # Update the display conditionally to avoid overload
-        if frame_counter % n_skipped == 0:  # Only update every n frames
-            # Add a delay to control frame rendering speed
-            time.sleep(delay)
-            stframe.image(frame, channels="BGR", use_column_width=True)  # Display in original color (BGR format)      
-
-        
-        frame_counter += 1  # Increment frame counter
-
-    vf.release()  # Release video capture object
+        vf.release()  # Release video capture object
 
 
 # Funzione asincrona per leggere feedback dal database
@@ -115,8 +113,3 @@ async def get_feedback():
 if st.button("Aggiorna Feedback"):
     feedback = asyncio.run(get_feedback())
     st.text_area("Feedback", value=feedback, height=300, disabled=True)
-    # try:
-    #     firebase_admin.delete_app(user_app)
-    #     st.success("Connessione a Firebase chiusa con successo!")
-    # except Exception as e:
-    #     st.error(f"Errore nella chiusura della connessione a Firebase: {e}")
