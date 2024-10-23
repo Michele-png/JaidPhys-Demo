@@ -18,6 +18,7 @@ st.title("Pose Estimation on Video")
 # File uploader
 uploaded_file = st.file_uploader("Upload a video of a person", type=["mp4", "avi", "mov"])
 
+show_feedback = False
 if uploaded_file is not None:
     # Save the uploaded video to a temporary file
     tfile = tempfile.NamedTemporaryFile(delete=False)
@@ -59,6 +60,7 @@ if uploaded_file is not None:
             stframe.image(frame, channels="BGR", use_column_width=True)  # Display in original color (BGR format)      
 
     vf.release()  # Release video capture object
+    show_feedback = True
 
 
 # Leggi Feedback dal DB
@@ -113,5 +115,6 @@ async def get_feedback():
 #     feedback = asyncio.run(get_feedback())
 #     st.text_area("Feedback", value=feedback, height=300, disabled=True)
 
-feedback = asyncio.run(get_feedback())
-st.text_area("Feedback", value=feedback, height=300, disabled=True)
+if show_feedback:
+    feedback = asyncio.run(get_feedback())
+    st.text_area("Feedback", value=feedback, height=300, disabled=True)
