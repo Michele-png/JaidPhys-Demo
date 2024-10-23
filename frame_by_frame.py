@@ -3,6 +3,8 @@ import cv2 as cv
 import tempfile
 import mediapipe as mp
 import time
+import os
+import json
 import asyncio
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -74,7 +76,9 @@ if uploaded_file is not None:
 async def get_feedback():
     try:
         # Inizializza l'app Firebase
-        cred = credentials.Certificate(secrets.FIREBASE_SERVICE_ACCOUNT_KEY)
+        firebase_key = os.getenv('FIREBASE_SERVICE_ACCOUNT_KEY')
+        service_account_info = json.loads(firebase_key)
+        cred = credentials.Certificate(service_account_info)
         try:
             user_app = firebase_admin.initialize_app(cred)
         except Exception as e:
