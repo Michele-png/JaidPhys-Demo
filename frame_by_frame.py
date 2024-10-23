@@ -3,8 +3,7 @@ import cv2 as cv
 import tempfile
 import mediapipe as mp
 import time
-import os
-import json
+import toml
 import asyncio
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -76,9 +75,27 @@ if uploaded_file is not None:
 async def get_feedback():
     try:
         # Inizializza l'app Firebase
-        cred = credentials.Certificate(**st.secrets.FIREBASE_SERVICE_ACCOUNT_KEY)
+        # Load the TOML content from an environment variable
+        toml_content = st.secrets["FIREBASE_SERVICE_ACCOUNT_KEY"]
+        # Parse the TOML content
+        credentials_data = toml.loads(toml_content)
+        # Create a certificate using the credentials
+        cred = credentials.Certificate({
+            "type": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["type"],
+            "project_id": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["project_id"],
+            "private_key_id": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["private_key_id"],
+            "private_key": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["private_key"].replace("\\n", "\n"),  # replace line breaks
+            "client_email": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["client_email"],
+            "client_id": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["client_id"],
+            "auth_uri": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["auth_uri"],
+            "token_uri": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["token_uri"],
+            "auth_provider_x509_cert_url": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["auth_provider_x509_cert_url"],
+            "client_x509_cert_url": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["client_x509_cert_url"],
+            "universe_domain": credentials_data["FIREBASE_SERVICE_ACCOUNT_KEY"]["universe_domain"]
+        })
         try:
-            user_app = firebase_admin.initialize_app(cred)
+            if not firebase_admin._apps:
+                firebase_admin.initialize_app(cred)
         except Exception as e:
             st.error(f'{e}')
 
