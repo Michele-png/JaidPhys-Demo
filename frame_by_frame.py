@@ -115,8 +115,8 @@ async def get_feedback():
 if st.button("Aggiorna Feedback"):
     feedback = asyncio.run(get_feedback())
     st.text_area("Feedback", value=feedback, height=300, disabled=True)
-    try:
-        firebase_admin.delete_app(user_app)
-        st.success("Connessione a Firebase chiusa con successo!")
-    except Exception as e:
-        st.error(f"Errore nella chiusura della connessione a Firebase: {e}")
+    # try:
+    #     firebase_admin.delete_app(user_app)
+    #     st.success("Connessione a Firebase chiusa con successo!")
+    # except Exception as e:
+    #     st.error(f"Errore nella chiusura della connessione a Firebase: {e}")
