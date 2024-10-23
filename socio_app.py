@@ -5,30 +5,53 @@ from firebase_admin import credentials, firestore
 
 
 # setup web app page
-st.set_page_config(
-    page_title="Interfaccia Socio - Inserimento Feedback",
-    layout="centered",
-)
-
-st.title("Interfaccia Socio - Inserimento Feedback")
-st.write("Inserisci il feedback che vuoi inviare allo spettatore.")
-
-# Campo di input per il feedback
-feedback_input = st.text_area("Feedback sullo spettatore:", height=300)
-action = st.selectbox('Azioni', ['Seleziona...', 'Chiudi l\'app Firebase'])
-
-
-
-# Inizializza l'app Firebase
-cred = credentials.Certificate(r"C:\Users\User\Downloads\jaidphysdemo-firebase-adminsdk-pxz38-e46d20f07e.json")
-try:
-    user_app = firebase_admin.initialize_app(cred)
+try: 
+    st.set_page_config(
+        page_title="Interfaccia Socio - Inserimento Feedback",
+        layout="centered",
+    )
+    st.title("Interfaccia Socio - Inserimento Feedback")
+    st.write("Inserisci il feedback che vuoi inviare allo spettatore.")
+    feedback_input = st.text_area("Feedback sullo spettatore:", height=300)
+    # action = st.selectbox('Azioni', ['Seleziona...', 'Chiudi l\'app Firebase'])
 except Exception as e:
-    st.error(f'{e}')
+    st.error(f"Errore nel setup della pagina: {e}")
+
+# Initialize App Firebase
+try:
+    # Load the TOML content from an environment variable
+    credentials_data = st.secrets.FIREBASE_SERVICE_ACCOUNT_KEY
+except Exception as e:
+    st.error(f"Errore nella lettura delle credenziali: {e}")
+    
+try:
+    cred = credentials.Certificate({
+        "type": credentials_data.type,
+        "project_id": credentials_data.project_id,
+        "private_key_id": credentials_data.private_key_id,
+        "private_key": credentials_data.private_key.replace("\\n", "\n"),  # replace line breaks
+        "client_email": credentials_data.client_email,
+        "client_id": credentials_data.client_id,
+        "auth_uri": credentials_data.auth_uri,
+        "token_uri": credentials_data.token_uri,
+        "auth_provider_x509_cert_url": credentials_data.auth_provider_x509_cert_url,
+        "client_x509_cert_url": credentials_data.client_x509_cert_url,
+        "universe_domain": credentials_data.universe_domain
+    })
+except Exception as e:
+    st.error(f"Errore nella conversione delle credenziali: {e}")
+    
+try:
+    if not firebase_admin._apps:
+        firebase_admin.initialize_app(cred)
+except Exception as e:
+    st.error(f"Errore nello stabilire una connessione: {e}")
 
 # Ottieni una istanza di Firestore
-db = firestore.client()
-
+try:
+    db = firestore.client()
+except Exception as e:
+    st.error(f"Errore nella creazione di un'istanza Firebase: {e}")
 
 # Pulsante per inviare il feedback
 if st.button("Invia Feedback"):
@@ -56,9 +79,9 @@ if st.checkbox("Mostra Feedback"):
     except Exception as e:
         st.error(f"Errore nella lettura dei feedback: {e}")
 
-if action == 'Chiudi l\'app Firebase':
-    try:
-        firebase_admin.delete_app(user_app)
-        st.success("Connessione a Firebase chiusa con successo!")
-    except Exception as e:
-        st.error(f"Errore nella chiusura della connessione a Firebase: {e}")
+# if action == 'Chiudi l\'app Firebase':
+#     try:
+#         firebase_admin.delete_app(user_app)
+#         st.success("Connessione a Firebase chiusa con successo!")
+#     except Exception as e:
+#         st.error(f"Errore nella chiusura della connessione a Firebase: {e}")
