@@ -11,16 +11,20 @@ def main():
             color: #5a5a5a; /* Testo grigio scuro */
         }
         .metric-box {
-            background-color: #ffe4c4; /* Beige caldo */
-            padding: 10px;
+            background-color: #fff5e6; /* Beige molto chiaro */
+            padding: 15px;
             border-radius: 10px;
             text-align: center;
             font-size: 20px;
+            margin-bottom: 20px; /* Spazio tra i box */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Ombra leggera per il box */
         }
         .stButton>button {
             background-color: #f4a460; /* Sabbia chiara */
             color: white;
             border-radius: 5px;
+            font-size: 16px;
+            padding: 10px 20px;
         }
         </style>
         """,
