@@ -32,7 +32,7 @@ def main():
     )
 
     # Titolo e descrizione
-    st.title("🌞 Calcolatore di Impatto di Dispositivi Elettronici e Problemi Muscoloscheletrici")
+    st.title("Calcolatore di Impatto di Dispositivi Elettronici e Problemi Muscoloscheletrici")
     st.write(
         """
         Inserisci il numero di dipendenti della tua azienda per calcolare:
@@ -69,7 +69,7 @@ def main():
         st.markdown(
             f"""
             <div class="metric-box">
-                <strong>Giorni per conformità DSE:</strong>
+                <strong>Giorni per conformità dei dispositivi:</strong>
                 <br><span style="font-size: 1.5em; color: #d2691e;">{days_admin_dse:.2f}</span>
             </div>
             """,
