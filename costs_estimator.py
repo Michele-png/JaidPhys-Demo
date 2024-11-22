@@ -32,7 +32,7 @@ def main():
     )
 
     # Titolo e descrizione
-    st.title("Calcolatore di Impatto di Dispositivi Elettronici e Problemi Muscoloscheletrici")
+    st.title("I Costi Nascosti di Dispositivi Elettronici e Problemi Muscoloscheletrici")
     st.write(
         """
         Inserisci il numero di dipendenti della tua azienda per calcolare:
