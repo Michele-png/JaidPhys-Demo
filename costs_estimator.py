@@ -105,7 +105,7 @@ def main():
             unsafe_allow_html=True,
         )
 
-    st.write("💡 I valori sono stimati considerando un giorno lavorativo di 8 ore.")
+    st.write("💡 I valori sono stimati considerando un giorno lavorativo di 8 ore e sono calcolati su base annua.")
 
 # Avvio dell'app
 if __name__ == "__main__":
