@@ -1,61 +1,108 @@
 import streamlit as st
 
+# Funzione principale
 def main():
-    st.title("Calcolatore di Impatto DSE e Problemi Muscoloscheletrici")
+    # Stile personalizzato
+    st.markdown(
+        """
+        <style>
+        body {
+            background-color: #fffaf0; /* Sfondo color avorio */
+            color: #5a5a5a; /* Testo grigio scuro */
+        }
+        .metric-box {
+            background-color: #ffe4c4; /* Beige caldo */
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 20px;
+        }
+        .stButton>button {
+            background-color: #f4a460; /* Sabbia chiara */
+            color: white;
+            border-radius: 5px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # Titolo e descrizione
+    st.title("🌞 Calcolatore di Impatto DSE e Problemi Muscoloscheletrici")
     st.write(
         """
-        Inserisci il numero di dipendenti della tua azienda per calcolare i seguenti valori:
-        - Giorni spesi per la gestione della conformità DSE.
-        - Giorni spesi dai dipendenti per completare valutazioni tradizionali DSE.
-        - Giorni persi a causa di assenze per problemi muscoloscheletrici.
-        - Giorni persi per riduzione di produttività correlata ai problemi muscoloscheletrici.
+        Inserisci il numero di dipendenti della tua azienda per calcolare:
+        - **Giorni spesi per la gestione della conformità DSE.**
+        - **Giorni spesi dai dipendenti per completare valutazioni tradizionali DSE.**
+        - **Giorni persi a causa di assenze per problemi muscoloscheletrici.**
+        - **Giorni persi per riduzione di produttività correlata ai problemi muscoloscheletrici.**
         """
     )
-    
+
     # Input: Numero di dipendenti
-    num_employees = st.number_input("Inserisci il numero di dipendenti", min_value=1, step=1, value=10)
-    
+    num_employees = st.number_input(
+        "🔢 Inserisci il numero di dipendenti",
+        min_value=1,
+        step=1,
+        value=10,
+    )
+
     # Calcoli
-    # Giorni spesi per la gestione della conformità DSE
-    days_admin_dse = (num_employees * 10) / 60 / 8  # 10 minuti per dipendente, convertito in giorni
-    
-    # Giorni spesi per completare valutazioni tradizionali DSE
-    days_training_dse = (num_employees * 45) / 60 / 8  # 45 minuti per dipendente, convertito in giorni
-    
-    # Giorni persi per assenze per problemi muscoloscheletrici
-    msk_absence_rate = 0.026  # 2.6% del personale
-    msk_absence_days = num_employees * msk_absence_rate * 20  # 4 settimane di assenza = 20 giorni lavorativi
-    
-    # Giorni persi per riduzione di produttività correlata ai problemi muscoloscheletrici
-    msk_pain_incidence = 0.15  # 15% del personale
-    msk_productivity_loss = 0.15  # 15% di perdita di produttività
-    msk_loss_days = num_employees * msk_pain_incidence * msk_productivity_loss * 220  # 220 giorni lavorativi annui
-    
-    # Output
-    st.subheader("Risultati")
-    st.write("I valori sono stimati considerando un giorno lavorativo di 8 ore.")
-    
+    days_admin_dse = (num_employees * 10) / 60 / 8
+    days_training_dse = (num_employees * 45) / 60 / 8
+    msk_absence_rate = 0.026
+    msk_absence_days = num_employees * msk_absence_rate * 20
+    msk_pain_incidence = 0.15
+    msk_productivity_loss = 0.15
+    msk_loss_days = num_employees * msk_pain_incidence * msk_productivity_loss * 220
+
+    # Risultati
+    st.subheader("📊 Risultati")
+
     col1, col2 = st.columns(2)
-    
+
     with col1:
-        st.metric(
-            label="Giorni spesi per la gestione della conformità DSE",
-            value=f"{days_admin_dse:.2f}"
+        st.markdown(
+            f"""
+            <div class="metric-box">
+                <strong>Giorni per conformità DSE:</strong>
+                <br><span style="font-size: 1.5em; color: #d2691e;">{days_admin_dse:.2f}</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
-        st.metric(
-            label="Giorni persi per riduzione di produttività correlata ai problemi muscoloscheletrici",
-            value=f"{msk_loss_days:.2f}"
-        )
-    
-    with col2:
-        st.metric(
-            label="Giorni spesi dai dipendenti per completare valutazioni tradizionali DSE",
-            value=f"{days_training_dse:.2f}"
-        )
-        st.metric(
-            label="Giorni persi per assenze dovute a problemi muscoloscheletrici",
-            value=f"{msk_absence_days:.2f}"
+        st.markdown(
+            f"""
+            <div class="metric-box">
+                <strong>Giorni persi per produttività ridotta:</strong>
+                <br><span style="font-size: 1.5em; color: #d2691e;">{msk_loss_days:.2f}</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
 
+    with col2:
+        st.markdown(
+            f"""
+            <div class="metric-box">
+                <strong>Giorni per valutazioni tradizionali:</strong>
+                <br><span style="font-size: 1.5em; color: #d2691e;">{days_training_dse:.2f}</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            f"""
+            <div class="metric-box">
+                <strong>Giorni persi per assenze:</strong>
+                <br><span style="font-size: 1.5em; color: #d2691e;">{msk_absence_days:.2f}</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    st.write("💡 I valori sono stimati considerando un giorno lavorativo di 8 ore.")
+
+# Avvio dell'app
 if __name__ == "__main__":
     main()
