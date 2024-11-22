@@ -32,13 +32,13 @@ def main():
     )
 
     # Titolo e descrizione
-    st.title("🌞 Calcolatore di Impatto DSE e Problemi Muscoloscheletrici")
+    st.title("🌞 Calcolatore di Impatto di Dispositivi Elettronici e Problemi Muscoloscheletrici")
     st.write(
         """
         Inserisci il numero di dipendenti della tua azienda per calcolare:
-        - **Giorni spesi per la gestione della conformità DSE.**
-        - **Giorni spesi dai dipendenti per completare valutazioni tradizionali DSE.**
-        - **Giorni persi a causa di assenze per problemi muscoloscheletrici.**
+        - **Giorni spesi per la gestione della conformità coi dispositivi elettronici aziendali.**
+        - **Giorni spesi dai dipendenti per completare valutazioni e formazione in fatto di salute in ufficio.**
+        - **Giorni persi a causa di assenze per problemi muscolari e scheletrici.**
         - **Giorni persi per riduzione di produttività correlata ai problemi muscoloscheletrici.**
         """
     )
